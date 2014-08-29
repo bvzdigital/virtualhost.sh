@@ -335,7 +335,7 @@ _EOT
     echo
     echo "Creating a virtualhost for $VIRTUALHOST..."
     echo -n "+ Adding $VIRTUALHOST to /etc/host... "
-    echo -e "$IP_ADDRESS\t$VIRTUALHOST" >> /etc/hosts
+    echo "$IP_ADDRESS\t$VIRTUALHOST" >> /etc/hosts
     echo "done"
 fi
 
@@ -481,7 +481,7 @@ __EOF
     # Create a default virtualhost file
     #
     echo -n "+ Creating virtualhost file... "
-    cat << __EOF >$APACHE_CONFIG/$APACHE_VIRTUAL_HOSTS_AVAILABLE/$VIRTUALHOST
+    cat << __EOF >$APACHE_CONFIG/$APACHE_VIRTUAL_HOSTS_AVAILABLE/$VIRTUALHOST.conf
     <VirtualHost *:$APACHE_PORT>
       DocumentRoot $DOC_ROOT_PREFIX/$FOLDER
       ServerName $VIRTUALHOST
@@ -490,8 +490,11 @@ __EOF
       ScriptAlias /cgi-bin $DOC_ROOT_PREFIX/$FOLDER/cgi-bin
 
       <Directory $DOC_ROOT_PREFIX/$FOLDER>
-        Options All
-        AllowOverride All
+       Options Indexes FollowSymLinks
+       AllowOverride None 
+       Order allow,deny
+       Allow from all
+       Require all granted
       </Directory>
     </VirtualHost>
 __EOF
@@ -516,11 +519,5 @@ __EOF
 
 __EOF
 
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    # Launch the new URL in the browser
-    #
-    echo -n "Launching virtualhost... "
-    sudo -u $USER -H xdg-open http://$VIRTUALHOST/ &
     echo "done"
 
