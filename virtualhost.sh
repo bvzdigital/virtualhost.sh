@@ -491,7 +491,7 @@ __EOF
 
       <Directory $DOC_ROOT_PREFIX/$FOLDER>
        Options Indexes FollowSymLinks
-       AllowOverride None 
+       AllowOverride All 
        Order allow,deny
        Allow from all
        Require all granted
